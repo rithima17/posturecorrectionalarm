@@ -1,70 +1,39 @@
-let videofeed;
-let posenet;
-let poses = [];
+let videoElement;
 let started = false;
 
-function setup() {
-  const canvas = createCanvas(400, 300);
-  canvas.parent("video");
-
-  videofeed = createCapture({
-    video: true,
-    audio: false
-  });
-
-  videofeed.size(400, 300);
-
-  // browser compatibility fix
-  videofeed.elt.setAttribute('playsinline', '');
-  videofeed.elt.muted = true;
-  videofeed.elt.autoplay = true;
-
-  posenet = ml5.poseNet(videofeed, () => {
-    console.log("PoseNet Ready");
-  });
-
-  posenet.on("pose", (results) => {
-    poses = results;
-  });
-
-  videofeed.hide();
-  noLoop();
-}
-
-function draw() {
-  if (started) {
-    image(videofeed, 0, 0, width, height);
-  }
-}
-
 function start() {
-  console.log("START CLICKED");
-  started = true;
-  loop();
+    console.log("START CLICKED");
+
+    if (started) return;
+    started = true;
+
+    videoElement = document.createElement("video");
+    videoElement.setAttribute("autoplay", true);
+    videoElement.setAttribute("playsinline", true);
+    videoElement.style.width = "400px";
+    videoElement.style.height = "300px";
+
+    const container = document.getElementById("video");
+    container.innerHTML = ""; // clear previous
+    container.appendChild(videoElement);
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            videoElement.srcObject = stream;
+        })
+        .catch(err => {
+            console.error("Camera error:", err);
+            alert("Camera access failed: " + err.message);
+        });
 }
 
 function stop() {
-  started = false;
-  noLoop();
-  document.body.style.filter = "none";
-}
+    started = false;
 
-let defaultY = null;
-
-function checkPosture() {
-  if (poses.length > 0) {
-    let y = poses[0].pose.keypoints[1].position.y;
-
-    if (defaultY === null) {
-      defaultY = y;
+    if (videoElement && videoElement.srcObject) {
+        let tracks = videoElement.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
     }
 
-    if (Math.abs(y - defaultY) > 20) {
-      document.body.style.filter = "blur(5px)";
-      document.getElementById("audioElement").play();
-    } else {
-      document.body.style.filter = "none";
-      document.getElementById("audioElement").pause();
-    }
-  }
+    document.getElementById("video").innerHTML = "";
 }
