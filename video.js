@@ -2,32 +2,40 @@ let videofeed;
 let posenet;
 let poses = [];
 let started = false;
-var audio = document.getElementById("audioElement");
 
-
-
-// p5.js setup() function to set up the canvas for the web cam video stream
+// Setup function
 function setup() {
-  //creating a canvas by giving the dimensions
   const canvas = createCanvas(400, 450);
   canvas.parent("video");
 
-  videofeed = createCapture(VIDEO);
-  videofeed.size(width, height);
-  console.log("setup");
+  // FIXED: Proper camera initialization
+  videofeed = createCapture({
+    video: true,
+    audio: false
+  });
 
-  // setting up the poseNet model to feed in the video feed.
-  posenet = ml5.poseNet(videofeed);
+  videofeed.size(width, height);
+  videofeed.parent("video");
+
+  // Important for browser compatibility
+  videofeed.elt.setAttribute('playsinline', '');
+  videofeed.elt.muted = true;
+  videofeed.elt.autoplay = true;
+
+  // Load PoseNet
+  posenet = ml5.poseNet(videofeed, () => {
+    console.log("PoseNet Ready");
+  });
 
   posenet.on("pose", function (results) {
     poses = results;
   });
 
-  videofeed.hide();
-  noLoop();
+  videofeed.hide(); // hide raw video (we draw on canvas)
+  noLoop(); // stop draw until start is clicked
 }
 
-// p5.js draw function() is called after the setup function
+// Draw loop
 function draw() {
   if (started) {
     image(videofeed, 0, 0, width, height);
@@ -35,70 +43,65 @@ function draw() {
   }
 }
 
-// toggle button for starting the video feed
+// Start button
 function start() {
   started = true;
   loop();
 }
 
-// toggle button for ending the video feed
+// Stop button
 function stop() {
   started = false;
   noLoop();
   removeblur();
-  started = false;
-  noLoop();
 }
 
-// defining the parameters used for the posenet : the tracking of the eyes
-var rightEye,
-  leftEye,
-  defaultRightEyePosition = [],
-  defaultLeftEyePosition = [];
+// Eye tracking variables
+let rightEye, leftEye;
+let defaultRightEyePosition = [];
+let defaultLeftEyePosition = [];
 
-//function to calculate the position of the various keypoints
+// Calculate posture
 function calEyes() {
   for (let i = 0; i < poses.length; i++) {
     let pose = poses[i].pose;
-    for (let j = 0; j < pose.keypoints.length; j++) {
-      let keypoint = pose.keypoints[j];
-      rightEye = pose.keypoints[2].position;
-      leftEye = pose.keypoints[1].position;
 
-      // keypoints are the points representing the different joints on the body recognized by posenet
+    rightEye = pose.keypoints[2].position;
+    leftEye = pose.keypoints[1].position;
 
-      while (defaultRightEyePosition.length < 1) {
-        defaultRightEyePosition.push(rightEye.y);
-      }
+    // Store initial position once
+    if (defaultRightEyePosition.length < 1) {
+      defaultRightEyePosition.push(rightEye.y);
+    }
 
-      while (defaultLeftEyePosition.length < 1) {
-        defaultLeftEyePosition.push(leftEye.y);
-      }
+    if (defaultLeftEyePosition.length < 1) {
+      defaultLeftEyePosition.push(leftEye.y);
+    }
 
-      // if the current position of the body is too far from the original position blur function is called
-      if (Math.abs(rightEye.y - defaultRightEyePosition[0]) > 20) {
-        blur();
-      }
-      if (Math.abs(rightEye.y - defaultRightEyePosition[0]) < 20) {
-        removeblur();
-      }
+    // Check posture deviation
+    if (Math.abs(rightEye.y - defaultRightEyePosition[0]) > 20) {
+      blur();
+    } else {
+      removeblur();
     }
   }
 }
 
-//function to blur the background and add audio effect
+// Blur + sound
 function blur() {
   document.body.style.filter = "blur(5px)";
-  document.body.style.transition = "1s";
-  var audio = document.getElementById("audioElement");
-  console.log("change");
-  audio.play();
+  document.body.style.transition = "0.5s";
+
+  let audio = document.getElementById("audioElement");
+  if (audio.paused) {
+    audio.play();
+  }
 }
 
-//function to remove the blur effect
+// Remove blur
 function removeblur() {
   document.body.style.filter = "blur(0px)";
-  var audio = document.getElementById("audioElement");
 
+  let audio = document.getElementById("audioElement");
   audio.pause();
 }
