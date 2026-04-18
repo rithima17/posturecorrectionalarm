@@ -3,68 +3,38 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Posture Correction Alarm</title>
 
-    <title>Posture Correction Alarm | Posture Monitoring System</title>
-    <link rel="icon" href="images/webcam.png" />
-
-    <!-- Fonts -->
+    <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
-    <script src="https://unpkg.com/ml5@0.2.3/dist/ml5.min.js"></script>
+    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
 
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
-
-    <!-- JS -->
-    <script src="video.js"></script>
 </head>
 
 <body>
 
-<!-- Header -->
 <div class="header">
     <h1>Posture Correction Alarm</h1>
     <p>AI-powered posture monitoring system</p>
 </div>
 
-<!-- Main Container -->
 <div class="container">
 
-    <!-- Card: Video -->
     <div class="card">
         <h3>Live Monitoring</h3>
-        <div id="video" class="video-cont"></div>
-        <p style="margin-top:10px; font-size:14px; opacity:0.7;">
-            Please allow camera access to start detection
-        </p>
+        <div id="video"></div>
+        <p class="info-text">Click Start to activate camera</p>
     </div>
 
-    <!-- Card: Info -->
     <div class="card">
-        <h3>About the System</h3>
-        <p>
-            This system uses AI (TensorFlow.js) to monitor posture in real-time.
-            It detects incorrect posture and alerts you with sound and screen blur.
-        </p>
-
-        <h4 style="color:#38bdf8;">Features</h4>
-        <ul>
-            <li>Real-time AI posture tracking</li>
-            <li>Automated alert system</li>
-            <li>Computer vision-based analysis</li>
-            <li>Prevents long-term spinal issues</li>
-        </ul>
-
-        <h4 style="color:#f59e0b;">Instructions</h4>
-        <ul>
-            <li>Click Start Monitoring</li>
-            <li>System detects your default posture</li>
-            <li>Move away → alert triggers</li>
-            <li>Return → alert stops</li>
-        </ul>
+        <h3>System Info</h3>
+        <p>This system uses AI to detect posture and alert when incorrect.</p>
 
         <button onclick="start()">Start Monitoring</button>
         <button onclick="stop()">Stop Monitoring</button>
@@ -72,15 +42,16 @@
 
 </div>
 
-<!-- Footer -->
 <div class="footer">
     Built with AI | Posture Monitoring System
 </div>
 
-<!-- Audio -->
 <audio id="audioElement">
     <source src="alert.wav" type="audio/wav" />
 </audio>
+
+<!-- IMPORTANT: JS at bottom -->
+<script src="video.js"></script>
 
 </body>
 </html>
