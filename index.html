@@ -8,11 +8,6 @@
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-    <!-- Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
-    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
-
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -33,11 +28,10 @@
     </div>
 
     <div class="card">
-        <h3>System Info</h3>
-        <p>This system uses AI to detect posture and alert when incorrect.</p>
-
+        <h3>Controls</h3>
         <button onclick="start()">Start Monitoring</button>
         <button onclick="stop()">Stop Monitoring</button>
+        <button onclick="playBeep()">Test Beep</button>
     </div>
 
 </div>
@@ -46,11 +40,10 @@
     Built with AI | Posture Monitoring System
 </div>
 
-<audio id="audioElement">
-    <source src="alert.wav" type="audio/wav" />
-</audio>
+<!-- AUDIO (use MP3) -->
+<audio id="audioElement" src="alert.mp3"></audio>
 
-<!-- IMPORTANT: JS at bottom -->
+<!-- JS -->
 <script src="video.js"></script>
 
 </body>
