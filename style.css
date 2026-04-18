@@ -1,64 +1,153 @@
-body {
+/* Reset */
+* {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: white;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #1e293b, #020617);
+    color: #e2e8f0;
 }
 
 /* Header */
 .header {
-    padding: 30px;
+    padding: 40px 20px;
     text-align: center;
-    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .header h1 {
-    margin: 0;
-    font-size: 36px;
+    font-size: 42px;
+    background: linear-gradient(90deg, #38bdf8, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .header p {
-    opacity: 0.8;
+    margin-top: 10px;
+    opacity: 0.7;
 }
 
-/* Main container */
+/* Container */
 .container {
-    width: 80%;
-    margin: 40px auto;
+    width: 85%;
+    max-width: 1100px;
+    margin: 50px auto;
 }
 
 /* Cards */
 .card {
-    background: #1e293b;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-    transition: 0.3s;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    transition: all 0.35s ease;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Gradient border glow */
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1px;
+    background: linear-gradient(120deg, #38bdf8, #6366f1, #22c55e);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+/* Hover */
 .card:hover {
-    transform: scale(1.02);
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
 }
 
-/* Button */
+/* Headings inside cards */
+.card h3 {
+    margin-bottom: 15px;
+}
+
+.card h4 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+/* Lists */
+.card ul {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+
+.card li {
+    margin-bottom: 6px;
+}
+
+/* Video container */
+.video-cont {
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    margin-top: 10px;
+}
+
+/* Buttons */
 button {
-    padding: 12px 25px;
-    background: #38bdf8;
+    padding: 12px 28px;
+    border-radius: 999px;
     border: none;
-    border-radius: 6px;
-    font-size: 16px;
+    font-size: 15px;
     cursor: pointer;
+    font-weight: 500;
+    color: white;
+    background: linear-gradient(135deg, #38bdf8, #6366f1);
+    box-shadow: 0 5px 15px rgba(56,189,248,0.4);
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    margin-right: 10px;
 }
 
+/* Button hover */
 button:hover {
-    background: #0ea5e9;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(99,102,241,0.6);
+    background: linear-gradient(135deg, #0ea5e9, #4f46e5);
 }
 
 /* Footer */
 .footer {
     text-align: center;
-    padding: 20px;
-    background: rgba(0,0,0,0.3);
-    margin-top: 40px;
+    padding: 25px;
+    margin-top: 50px;
+    font-size: 14px;
+    color: #94a3b8;
+    background: rgba(255,255,255,0.05);
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+    }
+
+    .header h1 {
+        font-size: 28px;
+    }
+
+    .video-cont {
+        height: 220px;
+    }
 }
