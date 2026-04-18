@@ -36,10 +36,9 @@ body {
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 12px;
-    backdrop-filter: blur(10px);
 }
 
-/* Video box */
+/* Video */
 #video {
     width: 400px;
     height: 300px;
@@ -56,8 +55,6 @@ button {
     background: linear-gradient(135deg, #38bdf8, #6366f1);
     color: white;
     cursor: pointer;
-    position: relative;
-    z-index: 10; /* FIX click issue */
 }
 
 button:hover {
