@@ -1,20 +1,36 @@
 let videoElement;
 let started = false;
 
+// Unlock audio (VERY IMPORTANT for Chrome)
+function unlockAudio() {
+    let audio = document.getElementById("audioElement");
+
+    audio.muted = true;
+    audio.play().then(() => {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.muted = false;
+        console.log("Audio unlocked");
+    }).catch(err => console.log("Unlock failed:", err));
+}
+
 function start() {
     console.log("START CLICKED");
 
     if (started) return;
     started = true;
 
+    unlockAudio(); // 🔥 unlock sound
+
+    const container = document.getElementById("video");
+    container.innerHTML = "";
+
     videoElement = document.createElement("video");
-    videoElement.setAttribute("autoplay", true);
-    videoElement.setAttribute("playsinline", true);
+    videoElement.autoplay = true;
+    videoElement.playsInline = true;
     videoElement.style.width = "400px";
     videoElement.style.height = "300px";
 
-    const container = document.getElementById("video");
-    container.innerHTML = ""; // clear previous
     container.appendChild(videoElement);
 
     navigator.mediaDevices.getUserMedia({ video: true })
@@ -22,8 +38,8 @@ function start() {
             videoElement.srcObject = stream;
         })
         .catch(err => {
-            console.error("Camera error:", err);
-            alert("Camera access failed: " + err.message);
+            console.error(err);
+            alert("Camera not working: " + err.message);
         });
 }
 
@@ -36,4 +52,16 @@ function stop() {
     }
 
     document.getElementById("video").innerHTML = "";
+}
+
+// Play beep
+function playBeep() {
+    let audio = document.getElementById("audioElement");
+
+    audio.currentTime = 0;
+    audio.play().then(() => {
+        console.log("Beep played");
+    }).catch(err => {
+        console.log("Beep failed:", err);
+    });
 }
