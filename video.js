@@ -3,105 +3,68 @@ let posenet;
 let poses = [];
 let started = false;
 
-// Setup function
 function setup() {
-  const canvas = createCanvas(400, 450);
+  const canvas = createCanvas(400, 300);
   canvas.parent("video");
 
-  // FIXED: Proper camera initialization
   videofeed = createCapture({
     video: true,
     audio: false
   });
 
-  videofeed.size(width, height);
-  videofeed.parent("video");
+  videofeed.size(400, 300);
 
-  // Important for browser compatibility
+  // browser compatibility fix
   videofeed.elt.setAttribute('playsinline', '');
   videofeed.elt.muted = true;
   videofeed.elt.autoplay = true;
 
-  // Load PoseNet
   posenet = ml5.poseNet(videofeed, () => {
     console.log("PoseNet Ready");
   });
 
-  posenet.on("pose", function (results) {
+  posenet.on("pose", (results) => {
     poses = results;
   });
 
-  videofeed.hide(); // hide raw video (we draw on canvas)
-  noLoop(); // stop draw until start is clicked
+  videofeed.hide();
+  noLoop();
 }
 
-// Draw loop
 function draw() {
   if (started) {
     image(videofeed, 0, 0, width, height);
-    calEyes();
   }
 }
 
-// Start button
 function start() {
+  console.log("START CLICKED");
   started = true;
   loop();
 }
 
-// Stop button
 function stop() {
   started = false;
   noLoop();
-  removeblur();
+  document.body.style.filter = "none";
 }
 
-// Eye tracking variables
-let rightEye, leftEye;
-let defaultRightEyePosition = [];
-let defaultLeftEyePosition = [];
+let defaultY = null;
 
-// Calculate posture
-function calEyes() {
-  for (let i = 0; i < poses.length; i++) {
-    let pose = poses[i].pose;
+function checkPosture() {
+  if (poses.length > 0) {
+    let y = poses[0].pose.keypoints[1].position.y;
 
-    rightEye = pose.keypoints[2].position;
-    leftEye = pose.keypoints[1].position;
-
-    // Store initial position once
-    if (defaultRightEyePosition.length < 1) {
-      defaultRightEyePosition.push(rightEye.y);
+    if (defaultY === null) {
+      defaultY = y;
     }
 
-    if (defaultLeftEyePosition.length < 1) {
-      defaultLeftEyePosition.push(leftEye.y);
-    }
-
-    // Check posture deviation
-    if (Math.abs(rightEye.y - defaultRightEyePosition[0]) > 20) {
-      blur();
+    if (Math.abs(y - defaultY) > 20) {
+      document.body.style.filter = "blur(5px)";
+      document.getElementById("audioElement").play();
     } else {
-      removeblur();
+      document.body.style.filter = "none";
+      document.getElementById("audioElement").pause();
     }
   }
-}
-
-// Blur + sound
-function blur() {
-  document.body.style.filter = "blur(5px)";
-  document.body.style.transition = "0.5s";
-
-  let audio = document.getElementById("audioElement");
-  if (audio.paused) {
-    audio.play();
-  }
-}
-
-// Remove blur
-function removeblur() {
-  document.body.style.filter = "blur(0px)";
-
-  let audio = document.getElementById("audioElement");
-  audio.pause();
 }
